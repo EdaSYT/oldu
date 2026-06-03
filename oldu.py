@@ -4,7 +4,7 @@ import pandas as pd
 # Sayfa Genişlik ve Tema Ayarı
 st.set_page_config(layout="wide", page_title="Montaj Hattı Dengeleme", page_icon="🏭")
 
-# Custom CSS ile Arayüzü Süsleyelim
+# Custom CSS ile Arayüz Tasarımı
 st.markdown("""
     <style>
     .main-title { font-size: 32px !important; font-weight: bold; color: #1E3A8A; margin-bottom: 5px; }
@@ -21,7 +21,7 @@ st.markdown('<div class="main-title">🏭 Montaj Hattı Dengeleme & Operatör At
 st.markdown('<div class="sub-title">Google OR-Tools CP-SAT Solver tabanlı gelişmiş optimizasyon ve analiz arayüzü.</div>', unsafe_allow_html=True)
 
 # =========================================================
-# YAN MENÜ (SIDEBAR) - AYARLAR
+# YAN MENÜ (SIDEBAR) - YENİ AYARLAR
 # =========================================================
 st.sidebar.header("⚙️ Parametre Ayarları")
 
@@ -34,10 +34,11 @@ with st.sidebar.expander("⚖️ Optimizasyon Kısıtları", expanded=True):
     U_MAX = st.sidebar.slider("Maks. Operatör Doluluğu (U_MAX)", min_value=0.0, max_value=1.0, value=0.95, step=0.01)
 
 st.sidebar.markdown("---")
-epsilon_choice = st.sidebar.slider("📊 Detaylı Rapor İçin Operatör Seç", min_value=12, max_value=36, value=29)
+# Yeni görsele göre varsayılan seçimi 28 yaptık
+epsilon_choice = st.sidebar.slider("📊 Detaylı Rapor İçin Operatör Seç", min_value=12, max_value=36, value=28)
 
 # =========================================================
-# GÖRSELDEKİ BİREBİR ÖZET TABLO VERİSİ
+# YENİ GÖRSELDEKİ (BİREBİR) GÜNCEL ÖZET TABLO VERİSİ
 # =========================================================
 raw_summary = {
     1:  {"C": "Infeasible", "Z": "-", "output": "-",     "target": "-"},
@@ -52,19 +53,20 @@ raw_summary = {
     10: {"C": "Infeasible", "Z": "-", "output": "-",     "target": "-"},
     11: {"C": "Infeasible", "Z": "-", "output": "-",     "target": "-"},
     12: {"C": 34.80,        "Z": 12.00, "output": 14.66, "target": "Hayır"},
-    13: {"C": 33.99,        "Z": 13.00, "output": 15.00, "target": "Hayır"},
-    14: {"C": 30.74,        "Z": 14.00, "output": 16.59, "target": "Hayır"},
-    15: {"C": 26.74,        "Z": 15.00, "output": 19.07, "target": "Hayır"},
+    13: {"C": 32.82,        "Z": 13.00, "output": 15.54, "target": "Hayır"},  # Güncellendi
+    14: {"C": 28.92,        "Z": 14.00, "output": 17.63, "target": "Hayır"},  # Güncellendi
+    15: {"C": 27.51,        "Z": 15.00, "output": 18.54, "target": "Hayır"},  # Güncellendi
     16: {"C": 26.32,        "Z": 16.00, "output": 19.38, "target": "Hayır"},
     17: {"C": 24.26,        "Z": 17.00, "output": 21.02, "target": "Hayır"},
-    18: {"C": 23.35,        "Z": 18.00, "output": 21.84, "target": "Hayır"},
+    18: {"C": 24.10,        "Z": 18.00, "output": 21.16, "target": "Hayır"},  # Güncellendi
     19: {"C": 21.83,        "Z": 19.00, "output": 23.36, "target": "Hayır"},
     20: {"C": 20.74,        "Z": 20.00, "output": 24.59, "target": "Hayır"},
     21: {"C": 19.58,        "Z": 21.00, "output": 26.05, "target": "Hayır"},
     22: {"C": 19.08,        "Z": 22.00, "output": 26.73, "target": "Hayır"},
-    23: {"C": 19.05,        "Z": 23.00, "output": 26.77, "target": "Hayır"},
+    23: {"C": 18.61,        "Z": 23.00, "output": 27.40, "target": "Hayır"},  # Güncellendi
     24: {"C": 18.52,        "Z": 24.00, "output": 27.54, "target": "Hayır"},
-    25: {"C": 17.48,        "Z": 25.00, "output": 29.18, "target": "Hayır"},
+    25: {"C": 17.65,        "Z": 25.00, "output": 28.90, "target": "Hayır"},  # Güncellendi
+    26: {"C": 17.63,        "Z": 26.00, "output": 28.93, "target": "Hayır"},  # Yeni Satır Eklendi
     27: {"C": 16.40,        "Z": 27.00, "output": 31.10, "target": "Hayır"},
     28: {"C": 15.89,        "Z": 28.00, "output": 32.10, "target": "Evet"},
     29: {"C": 15.24,        "Z": 29.00, "output": 33.46, "target": "Evet"},
@@ -89,38 +91,52 @@ for k, v in raw_summary.items():
 df_summary = pd.DataFrame(df_list)
 
 # =========================================================
-# OPERATÖR 29 İÇİN DETAYLI RAPOR VERİLERİ
+# YENİ YÜKLENEN OPERATÖR 28 İÇİN DETAYLI RAPOR VERİLERİ
 # =========================================================
-detailed_29 = {
-    "C": 15.24, "workers": 29, "output": 33.46, "meets": "Evet",
+detailed_28 = {
+    "C": 15.89, "workers": 28, "output": 32.10, "meets": "Evet",
     "station_assignments": {
-        1: [1, 2, 3], 2: [4, 5], 3: [6], 4: [7, 8, 9], 5: [10], 6: [11, 12, 13], 7: [14, 15, 16],
-        8: [17, 18], 9: [19], 10: [20, 21], 11: [22], 12: [23, 24, 25], 13: [26], 14: [27],
-        15: [28], 16: [29, 30], 17: [31], 18: [32, 33], 19: [34], 20: [35], 21: [36, 37],
-        22: [38, 39, 40], 23: [41, 42, 43, 44, 45], 24: [46], 25: [47, 48, 49], 26: [50],
-        27: [51, 52], 28: [53, 54], 29: [55, 56, 57], 31: [58], 32: [59, 60], 34: [61, 62, 63]
+        1: [1, 2, 3], 2: [4, 5], 3: [6], 4: [7, 8, 9], 5: [10], 6: [11, 12, 13], 7: [14],
+        8: [15], 9: [16, 17, 18], 10: [19], 11: [20, 21, 22], 12: [23, 24, 25], 13: [26],
+        14: [27], 15: [28], 16: [29], 17: [30, 31], 18: [32, 33], 19: [34], 20: [35, 36],
+        21: [37, 38, 39, 40], 22: [41, 42, 43], 23: [], 24: [], 25: [44, 45, 46],
+        26: [47, 48, 49], 27: [], 28: [], 29: [50], 30: [51, 52], 31: [53, 54],
+        32: [55], 33: [], 34: [56, 57, 58], 35: [59, 60], 36: [61, 62, 63]
     },
     "station_loads": {
-        1: 14.34, 2: 14.58, 3: 11.58, 4: 12.11, 5: 10.30, 6: 14.80, 7: 10.92, 8: 10.99, 9: 11.27,
-        10: 12.15, 11: 3.31, 12: 15.24, 13: 5.20, 14: 11.89, 15: 6.30, 16: 14.30, 17: 14.20,
-        18: 7.11, 19: 14.49, 20: 3.14, 21: 13.19, 22: 11.34, 23: 14.36, 24: 10.74, 25: 14.74,
-        26: 15.09, 27: 14.24, 28: 12.03, 29: 9.73, 31: 11.06, 32: 14.50, 34: 11.40
+        1: 14.34, 2: 14.58, 3: 11.58, 4: 12.11, 5: 10.30, 6: 14.80, 7: 2.44, 8: 3.58,
+        9: 15.89, 10: 11.27, 11: 15.46, 12: 15.24, 13: 5.20, 14: 11.89, 15: 6.30,
+        16: 13.32, 17: 15.18, 18: 7.11, 19: 14.49, 20: 15.26, 21: 12.41, 22: 12.42,
+        23: 0.00, 24: 0.00, 25: 12.68, 26: 14.74, 27: 0.00, 28: 0.00, 29: 15.09,
+        30: 14.24, 31: 12.03, 32: 6.45, 33: 0.00, 34: 14.34, 35: 14.50, 36: 11.40
     },
     "operator_stations": {
-        5: [3], 8: [21], 9: [17], 11: [14], 12: [18, 20], 13: [4], 14: [5], 15: [8], 16: [28],
-        17: [31], 18: [19], 19: [27], 20: [16], 21: [12], 22: [13, 15], 23: [22], 24: [24],
-        25: [26], 26: [23], 27: [10], 28: [9, 11], 29: [29, 30], 30: [32, 33], 31: [25],
-        32: [6], 33: [7], 34: [2], 35: [34, 35, 36], 36: [1]
+        4: [20], 7: [19], 8: [16], 9: [18], 11: [21], 12: [4], 13: [14], 14: [17],
+        15: [31], 18: [3], 19: [13, 15], 20: [25], 21: [12], 22: [26], 23: [30],
+        24: [34], 25: [27, 28, 29], 26: [9], 27: [8, 10], 28: [22, 23, 24], 29: [11],
+        30: [32], 31: [6], 32: [5, 7], 33: [2], 34: [33, 35], 35: [36], 36: [1]
     },
     "operator_loads": {
-        5: 11.58, 8: 13.19, 9: 14.20, 11: 11.89, 12: 10.25, 13: 12.11, 14: 10.30, 15: 10.99,
-        16: 12.03, 17: 11.06, 18: 14.49, 19: 14.24, 20: 14.30, 21: 15.24, 22: 11.50, 23: 11.34,
-        24: 10.74, 25: 15.09, 26: 14.36, 27: 12.15, 28: 14.58, 29: 9.73, 30: 14.50, 31: 14.74,
-        32: 14.80, 33: 10.92, 34: 14.58, 35: 11.40, 36: 14.34
-    }
+        4: 15.26, 7: 14.49, 8: 13.32, 9: 7.11, 11: 12.41, 12: 12.11, 13: 11.89, 14: 15.18,
+        15: 12.03, 18: 11.58, 19: 11.50, 20: 12.68, 21: 15.24, 22: 14.74, 23: 14.24, 24: 14.34,
+        25: 15.09, 26: 15.89, 27: 14.85, 28: 12.42, 29: 15.46, 30: 6.45, 31: 14.80, 32: 12.74,
+        33: 14.58, 34: 14.50, 35: 11.40, 36: 14.34
+    },
+    "distance_control": [
+        {"Operatör": 19, "İstasyonlar": "İstasyon 13-15", "Mesafe": 4, "Durum": "Uygun"},
+        {"Operatör": 25, "İstasyonlar": "İstasyon 27-28", "Mesafe": 2, "Durum": "Uygun"},
+        {"Operatör": 25, "İstasyonlar": "İstasyon 27-29", "Mesafe": 4, "Durum": "Uygun"},
+        {"Operatör": 25, "İstasyonlar": "İstasyon 28-29", "Mesafe": 2, "Durum": "Uygun"},
+        {"Operatör": 27, "İstasyonlar": "İstasyon 8-10",  "Mesafe": 4, "Durum": "Uygun"},
+        {"Operatör": 28, "İstasyonlar": "İstasyon 22-23", "Mesafe": 2, "Durum": "Uygun"},
+        {"Operatör": 28, "İstasyonlar": "İstasyon 22-24", "Mesafe": 4, "Durum": "Uygun"},
+        {"Operatör": 28, "İstasyonlar": "İstasyon 23-24", "Mesafe": 2, "Durum": "Uygun"},
+        {"Operatör": 32, "İstasyonlar": "İstasyon 5-7",   "Mesafe": 4, "Durum": "Uygun"},
+        {"Operatör": 34, "İstasyonlar": "İstasyon 33-35", "Mesafe": 4, "Durum": "Uygun"}
+    ]
 }
 
-# Session State ile hesaplama kontrolü kilitleniyor
+# Session State ile hesaplama kontrolü
 if "calculated" not in st.session_state:
     st.session_state.calculated = False
 
@@ -132,7 +148,7 @@ if st.button("🚀 Tüm Senaryoları Hesapla ve Analiz Et"):
 # =========================================================
 if st.session_state.calculated:
     
-    # 1. KISIM: ÖZET TABLO PANELI
+    # 1. KISIM: GÜNCEL ÖZET TABLO PANELI
     st.markdown('<div class="section-header">📋 ÖZET TABLO SONUÇLARI</div>', unsafe_allow_html=True)
     
     m_col1, m_col2 = st.columns(2)
@@ -141,7 +157,6 @@ if st.session_state.calculated:
     
     st.write("")
     
-    # .applymap yerine güncel olan .map kullanıldı (Hatanın çözümü)
     def style_infeasible(val):
         if val == "Infeasible":
             return 'background-color: #FEE2E2; color: #991B1B; font-weight: bold;'
@@ -154,49 +169,65 @@ if st.session_state.calculated:
     styled_df = df_summary.style.map(style_infeasible, subset=["F1 (Çevrim Süresi - C)", "Hedef Sağlandı mı?"])
     st.dataframe(styled_df, use_container_width=True, height=500)
 
-    # 2. KISIM: DETAYLI SENARYO RAPORU PANELI
+    # 2. KISIM: GÜNCEL DETAYLI SENARYO RAPORU PANELI
     st.markdown(f'<div class="section-header">📊 DETAYLI SENARYO RAPORU | Operatör Sayısı = {epsilon_choice}</div>', unsafe_allow_html=True)
     
-    if epsilon_choice != 29:
-        st.warning(f"Şu an mock veri yapısında yalnızca 29 operatörün detay sonuçları yüklüdür. Görsellerinizdeki tam eşleşmeyi görmek için lütfen soldan 29'u seçiniz.")
+    if epsilon_choice != 28:
+        st.warning(f"Şu an yeni veri yapısında yalnızca 28 operatörün detay sonuçları yüklüdür. Görsellerinizdeki tam eşleşmeyi görmek için lütfen soldan 28'i seçiniz.")
     else:
         st.markdown(f"""
         <div class="report-card">
-            <b>• Çevrim Süresi (C):</b> {detailed_29['C']} dk/ürün <br>
-            <b>• Kullanılan Operatör Sayısı:</b> {detailed_29['workers']} <br>
+            <b>• Çevrim Süresi (C):</b> {detailed_28['C']} dk/ürün <br>
+            <b>• Kullanılan Operatör Sayısı:</b> {detailed_28['workers']} <br>
             <b>• Maksimum İzin Verilen Operatör Doluluğu:</b> %{U_MAX*100:.2f} <br>
-            <b>• Ulaşılabilir Üretim:</b> {detailed_29['output']} adet/vardiya <br>
-            <b>• Hedef Üretim (32 adet) Sağlanıyor mu?:</b> <span style='color:green; font-weight:bold;'>{detailed_29['meets']}</span>
+            <b>• Ulaşılabilir Üretim:</b> {detailed_28['output']} adet/vardiya <br>
+            <b>• Hedef Üretim (32 adet) Sağlanıyor mu?:</b> <span style='color:green; font-weight:bold;'>{detailed_28['meets']}</span>
         </div>
         """, unsafe_allow_html=True)
         
         col1, col2 = st.columns(2)
         
+        # Sol Panel: İstasyon Atamaları ve Yükleri
         with col1:
             st.markdown("### 🚉 İstasyon Atamaları ve Yükleri")
             st_data = []
-            for s_id in sorted(detailed_29["station_assignments"].keys()):
+            for s_id in sorted(detailed_28["station_assignments"].keys()):
                 st_data.append({
                     "İstasyon No": f"İstasyon {s_id}",
-                    "Atanan Operasyonlar": str(detailed_29["station_assignments"][s_id]),
-                    "İstasyon Yükü (dk)": f"{detailed_29['station_loads'].get(s_id, 0.0):.2f} dk"
+                    "Atanan Operasyonlar": str(detailed_28["station_assignments"][s_id]) if detailed_28["station_assignments"][s_id] else "Boş",
+                    "İstasyon Yükü (dk)": f"{detailed_28['station_loads'].get(s_id, 0.0):.2f} dk"
                 })
-            st.dataframe(pd.DataFrame(st_data), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(st_data), use_container_width=True, hide_index=True, height=450)
             
+        # Sağ Panel: Operatör Performans Tablosu
         with col2:
             st.markdown("### 👷 Operatör Performans ve Atama Tablosu")
             op_data = []
-            for o_id in sorted(detailed_29["operator_stations"].keys()):
-                p_load = detailed_29["operator_loads"][o_id]
+            for o_id in sorted(detailed_28["operator_stations"].keys()):
+                p_load = detailed_28["operator_loads"][o_id]
                 s_load = p_load * D
                 u_val = 100 * ((D / T) * p_load)
                 op_data.append({
                     "Operatör No": f"Operatör {o_id}",
-                    "Sorumlu İstasyonlar": str(detailed_29["operator_stations"][o_id]),
+                    "Sorumlu İstasyonlar": str(detailed_28["operator_stations"][o_id]),
                     "Ürün Başı Yük (dk)": f"{p_load:.2f} dk",
                     "Vardiya Yükü (dk)": f"{s_load:.2f} dk",
                     "Doluluk Oranı (U)": f"%{u_val:.2f}"
                 })
-            st.dataframe(pd.DataFrame(op_data), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(op_data), use_container_width=True, hide_index=True, height=450)
+
+        # 3. KISIM: [5] MESAFE KONTROLÜ TABLOSU (Alt Geniş Panel)
+        st.write("")
+        st.markdown("### 🏃‍♂️ [5] Mesafe Kontrolü Raporu")
+        df_dist = pd.DataFrame(detailed_28["distance_control"])
+        
+        def style_distance(val):
+            if val == "Uygun":
+                return 'background-color: #D1FAE5; color: #065F46; font-weight: bold; text-align: center;'
+            return ''
+            
+        styled_dist = df_dist.style.map(style_distance, subset=["Durum"])
+        st.dataframe(styled_dist, use_container_width=True, hide_index=True)
+
 else:
-    st.info("Tabloları ve sistem analizini listelemek için yukarıdaki 'Tüm Senaryoları Hesapla ve Analiz Et' butonuna tıklayın.")
+    st.info("Yenilenen verileri tablolarda süslü görmek ve mesafe kontrollerini incelemek için 'Tüm Senaryoları Hesapla ve Analiz Et' butonuna tıklayın.")
