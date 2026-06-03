@@ -77,7 +77,6 @@ raw_summary = {
     36: {"C": 15.09,        "Z": 36.00, "output": 33.80, "target": "Evet"}
 }
 
-# Pandas DataFrame'e Dönüştürme
 df_list = []
 for k, v in raw_summary.items():
     df_list.append({
@@ -121,22 +120,28 @@ detailed_29 = {
     }
 }
 
-# =========================================================
-# AKSİYON BUTONU VE GÖRÜNTÜLEME
-# =========================================================
+# Session State ile hesaplama kontrolü kilitleniyor
+if "calculated" not in st.session_state:
+    st.session_state.calculated = False
+
 if st.button("🚀 Tüm Senaryoları Hesapla ve Analiz Et"):
+    st.session_state.calculated = True
+
+# =========================================================
+# GÖRÜNTÜLEME ALANI
+# =========================================================
+if st.session_state.calculated:
     
     # 1. KISIM: ÖZET TABLO PANELI
     st.markdown('<div class="section-header">📋 ÖZET TABLO SONUÇLARI</div>', unsafe_allow_html=True)
     
-    # İdeal ve Nadir Noktalar Kart Tasarımı
     m_col1, m_col2 = st.columns(2)
     m_col1.metric(label="🎯 İdeal Nokta (C, Z)", value="(15.09, 12.00)")
     m_col2.metric(label="⚠️ Nadir Nokta (C, Z)", value="(34.80, 36.00)")
     
     st.write("")
     
-    # Süslü Tablo Renklendirme Fonksiyonu (Infeasible satırları hafif kırmızı yapar)
+    # .applymap yerine güncel olan .map kullanıldı (Hatanın çözümü)
     def style_infeasible(val):
         if val == "Infeasible":
             return 'background-color: #FEE2E2; color: #991B1B; font-weight: bold;'
@@ -146,9 +151,7 @@ if st.button("🚀 Tüm Senaryoları Hesapla ve Analiz Et"):
             return 'background-color: #FEF3C7; color: #92400E; font-weight: bold;'
         return ''
 
-    styled_df = df_summary.style.applymap(style_infeasible, subset=["F1 (Çevrim Süresi - C)", "Hedef Sağlandı mı?"])
-    
-    # Tabloyu Ekrana Basma
+    styled_df = df_summary.style.map(style_infeasible, subset=["F1 (Çevrim Süresi - C)", "Hedef Sağlandı mı?"])
     st.dataframe(styled_df, use_container_width=True, height=500)
 
     # 2. KISIM: DETAYLI SENARYO RAPORU PANELI
@@ -157,7 +160,6 @@ if st.button("🚀 Tüm Senaryoları Hesapla ve Analiz Et"):
     if epsilon_choice != 29:
         st.warning(f"Şu an mock veri yapısında yalnızca 29 operatörün detay sonuçları yüklüdür. Görsellerinizdeki tam eşleşmeyi görmek için lütfen soldan 29'u seçiniz.")
     else:
-        # Üst Rapor Kartı
         st.markdown(f"""
         <div class="report-card">
             <b>• Çevrim Süresi (C):</b> {detailed_29['C']} dk/ürün <br>
@@ -168,10 +170,8 @@ if st.button("🚀 Tüm Senaryoları Hesapla ve Analiz Et"):
         </div>
         """, unsafe_allow_html=True)
         
-        # Grid Yapısı: Yan yana şık tablolar
         col1, col2 = st.columns(2)
         
-        # Tablo [1] ve [2] birleşimi: İstasyon Detayları
         with col1:
             st.markdown("### 🚉 İstasyon Atamaları ve Yükleri")
             st_data = []
@@ -183,7 +183,6 @@ if st.button("🚀 Tüm Senaryoları Hesapla ve Analiz Et"):
                 })
             st.dataframe(pd.DataFrame(st_data), use_container_width=True, hide_index=True)
             
-        # Tablo [3] ve [4] birleşimi: Operatör Detayları
         with col2:
             st.markdown("### 👷 Operatör Performans ve Atama Tablosu")
             op_data = []
@@ -200,4 +199,4 @@ if st.button("🚀 Tüm Senaryoları Hesapla ve Analiz Et"):
                 })
             st.dataframe(pd.DataFrame(op_data), use_container_width=True, hide_index=True)
 else:
-    st.info("Süslü tabloları ve sistem analizini listelemek için yukarıdaki 'Tüm Senaryoları Hesapla ve Analiz Et' butonuna tıklayın.")
+    st.info("Tabloları ve sistem analizini listelemek için yukarıdaki 'Tüm Senaryoları Hesapla ve Analiz Et' butonuna tıklayın.")
