@@ -12,7 +12,7 @@ st.markdown("""
     .section-header { font-size: 22px !important; font-weight: bold; color: #1E3A8A; margin-top: 20px; margin-bottom: 15px; border-bottom: 2px solid #E5E7EB; padding-bottom: 5px; }
     .report-card { background-color: #F3F4F6; padding: 15px; border-radius: 8px; border-left: 5px solid #3B82F6; margin-bottom: 20px; }
     </style>
-""", unsafe_unsafe_with_harmful_empty_element=True)
+""", unsafe_allow_html=True)
 
 # =========================================================
 # BAŞLIK
