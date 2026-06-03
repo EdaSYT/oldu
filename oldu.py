@@ -230,4 +230,4 @@ if st.session_state.calculated:
         st.dataframe(styled_dist, use_container_width=True, hide_index=True)
 
 else:
-    st.info("Yenilenen verileri tablolarda süslü görmek ve mesafe kontrollerini incelemek için 'Tüm Senaryoları Hesapla ve Analiz Et' butonuna tıklayın.")
+    st.info("Yenilenen verileri tablolarda görmek ve mesafe kontrollerini incelemek için 'Tüm Senaryoları Hesapla ve Analiz Et' butonuna tıklayın.")
